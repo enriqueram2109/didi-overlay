@@ -2,7 +2,6 @@ package com.didioverlay
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
@@ -17,28 +16,9 @@ class MainActivity : AppCompatActivity() {
                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                 Uri.parse("package:$packageName")
             )
-            startActivityForResult(intent, 1234)
+            startActivity(intent)
         } else {
-            startOverlay()
+            startService(Intent(this, OverlayService::class.java))
         }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1234) {
-            if (Settings.canDrawOverlays(this)) {
-                startOverlay()
-            }
-        }
-    }
-
-    private fun startOverlay() {
-        val intent = Intent(this, OverlayService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(intent)
-        } else {
-            startService(intent)
-        }
-        finish()
     }
 }
